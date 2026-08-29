@@ -33,7 +33,7 @@ const pkg = JSON.parse(
   };
 };
 
-const MIMES = ["text/plain","text/markdown","text/csv"];
+const MIMES = ["text/plain","text/csv"];
 
 const ARTIFACT_ALLOWED_CINATRA_KEYS = new Set([
   "kind",
@@ -70,7 +70,7 @@ describe("package.json manifest — the system-base text identity", () => {
     expect("skills" in pkg.cinatra.artifact).toBe(false);
   });
 
-  it("ACCEPTS the full text roster for upload typing (no wildcards)", () => {
+  it("ACCEPTS plain text and csv for upload typing (no wildcards)", () => {
     expect(pkg.cinatra.artifact.accepts.file.mimeTypes).toEqual(MIMES);
     // No wildcard entry — a required base is a dedicated, non-universal MIME home.
     for (const m of pkg.cinatra.artifact.accepts.file.mimeTypes) {
@@ -78,10 +78,21 @@ describe("package.json manifest — the system-base text identity", () => {
     }
   });
 
-  it("DRAWS only text/csv — a subset of accepts; text/plain + text/markdown keep the host floor", () => {
+  it("does NOT accept text/markdown — the markdown base is its dedicated home", () => {
+    // Exactly one installed base may claim a form: markdown belongs to the
+    // markdown base alone, so this base must not list it in accepts, in the
+    // typed src manifest, or in what the renderer draws.
+    expect(pkg.cinatra.artifact.accepts.file.mimeTypes).not.toContain("text/markdown");
+    expect(textArtifactManifest.accepts.file.mimeTypes).not.toContain("text/markdown");
+    expect(pkg.cinatra.artifact.ui.renderers.detail.representations ?? []).not.toContain(
+      "text/markdown",
+    );
+  });
+
+  it("DRAWS only text/csv — a subset of accepts; text/plain keeps the host floor", () => {
     // The renderer's `representations` (what it draws) is a deliberate SUBSET of
-    // `accepts` (what it types): the host owns richer `text` / `markdown`
-    // renderers, so this base draws only the csv form the host has no renderer for.
+    // `accepts` (what it types): the host owns a richer `text` renderer, so
+    // this base draws only the csv form the host has no renderer for.
     expect(pkg.cinatra.artifact.ui.renderers.detail.representations).toEqual(["text/csv"]);
     const reps = pkg.cinatra.artifact.ui.renderers.detail.representations ?? [];
     for (const r of reps) {
