@@ -1,6 +1,6 @@
 // Text detail renderer (slot `detail`).
 //
-// Previews a plain-text document (text/plain, text/markdown, text/csv) inline
+// Previews a plain-text document (text/plain, text/csv) inline
 // via a FULLY-SANDBOXED `<iframe>` pointed at the host-authorized preview URL.
 // The browser renders the text natively; the sandbox (`sandbox=""` — no
 // allow-scripts, no allow-same-origin) is defense-in-depth: even if the preview

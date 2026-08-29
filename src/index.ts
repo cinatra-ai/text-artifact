@@ -1,4 +1,4 @@
-// `@cinatra-ai/text-artifact` — the system-base plain-text renderer. It ships a `detail`-slot renderer that previews a text document (plain / Markdown / CSV) inline via a fully-sandboxed `<iframe>` pointed at the host-authorized preview URL.
+// `@cinatra-ai/text-artifact` — the system-base plain-text renderer. It ships a `detail`-slot renderer that previews a text document (plain text / CSV) inline via a fully-sandboxed `<iframe>` pointed at the host-authorized preview URL.
 //
 // A renderer artifact: it declares its accepted upload MIME set (the required
 // MIME-base expansion, epic cinatra#1883 slice A1), a single `detail`-slot v1
@@ -44,7 +44,7 @@ export interface TextArtifactManifest {
 export const textArtifactManifest: TextArtifactManifest = {
   accepts: {
     file: {
-      mimeTypes: ["text/plain","text/markdown","text/csv"],
+      mimeTypes: ["text/plain","text/csv"],
     },
   },
   ui: {
@@ -53,11 +53,13 @@ export const textArtifactManifest: TextArtifactManifest = {
     renderers: {
       detail: {
         // The renderer DRAWS only text/csv — the accepted text format the host
-        // has no first-party renderer for. text/plain and text/markdown are
-        // accepted (upload TYPING below) but keep their richer host-owned
-        // renderers (the `text` / `markdown` first-party floor), so this base
-        // never displaces them. `representations` (what this pack draws) is
-        // deliberately a subset of `accepts` (what this pack types).
+        // has no first-party renderer for. text/plain is accepted (upload
+        // TYPING below) but keeps its richer host-owned renderer (the `text`
+        // first-party floor), so this base never displaces it.
+        // `representations` (what this pack draws) is deliberately a subset of
+        // `accepts` (what this pack types). text/markdown is NOT accepted here:
+        // markdown has a dedicated base of its own, and exactly one installed
+        // base may claim a form.
         entry: "./src/renderers/detail.tsx",
         propsApiVersion: 1,
         representations: ["text/csv"],
