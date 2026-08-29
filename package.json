@@ -77,5 +77,12 @@
         }
       ]
     }
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./src/renderers/detail": {
+      "import": "./src/renderers/detail.tsx",
+      "default": "./src/renderers/detail.tsx"
+    }
   }
 }
