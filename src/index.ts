@@ -49,7 +49,7 @@ export const textArtifactManifest: TextArtifactManifest = {
   },
   ui: {
     abiVersion: 1,
-    sdkAbiRange: "^2.4.0",
+    sdkAbiRange: "^2.5.0",
     renderers: {
       detail: {
         // The renderer DRAWS only text/csv — the accepted text format the host
