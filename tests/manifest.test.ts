@@ -113,7 +113,7 @@ describe("package.json manifest — the system-base text identity", () => {
     for (const k of Object.keys(detail)) {
       expect(ARTIFACT_UI_RENDERER_ALLOWED_KEYS.has(k)).toBe(true);
     }
-    expect(detail.propsApiVersion).toBe(1);
+    expect(detail.propsApiVersion).toBe(2);
   });
 
   it("points the detail entry at a package-contained subpath that exists", () => {
