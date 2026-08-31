@@ -53,7 +53,7 @@
         "renderers": {
           "detail": {
             "entry": "./src/renderers/detail.tsx",
-            "propsApiVersion": 1,
+            "propsApiVersion": 2,
             "representations": [
               "text/csv"
             ]
