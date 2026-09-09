@@ -2,8 +2,10 @@
 //
 // It draws the plain-text document the host projected onto these props, read
 // from the pinned revision on the server and capped there. It is READ-ONLY: the
-// content as it was stored at that revision, with a download affordance beside
-// it when there is an address for one.
+// content as it was stored at that revision, and nothing else — no download
+// anchor of its own beneath the body, where it would read as one more line of
+// the file. The download belongs to the surface around this display, and to the
+// named floor, which is a display for bytes that cannot be drawn at all.
 //
 // WHAT CHANGED AND WHY. This display used to hand the browser a host-authorized
 // address and let it load the document in a fully-sandboxed subframe. A
@@ -66,7 +68,6 @@ export default function TextArtifactDetail(props: ArtifactRendererProps): ReactE
           {`Showing the first ${view.projectedByteLength.toLocaleString("en-US")} of ${view.byteLength.toLocaleString("en-US")} bytes. Download it to read the whole of it.`}
         </p>
       ) : null}
-      {download}
     </article>
   );
 }
