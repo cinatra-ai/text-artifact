@@ -80,17 +80,17 @@ export const textArtifactManifest: TextArtifactManifest = {
     sdkAbiRange: "^2.5.0",
     renderers: {
       detail: {
-        // The renderer DRAWS only text/csv — the accepted text format the host
-        // has no first-party renderer for. text/plain is accepted (upload
-        // TYPING below) but keeps its richer host-owned renderer (the `text`
-        // first-party floor), so this base never displaces it.
-        // `representations` (what this pack draws) is deliberately a subset of
+        // The renderer DRAWS both accepted text forms, text/plain beside
+        // text/csv, in the order `accepts` lists them: the display is
+        // mime-agnostic and draws whatever text projection the host hands it,
+        // so this base is the display a plain-text artifact meets.
+        // `representations` (what this pack draws) stays a subset of
         // `accepts` (what this pack types). text/markdown is NOT accepted here:
         // markdown has a dedicated base of its own, and exactly one installed
-        // base may claim a form.
+        // base may claim a form; text/x-markdown is never claimed here either.
         entry: "./src/renderers/detail.tsx",
         propsApiVersion: 2,
-        representations: ["text/csv"],
+        representations: ["text/plain", "text/csv"],
       },
     },
   },
