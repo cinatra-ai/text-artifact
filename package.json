@@ -55,6 +55,7 @@
             "entry": "./src/renderers/detail.tsx",
             "propsApiVersion": 2,
             "representations": [
+              "text/plain",
               "text/csv"
             ]
           }
