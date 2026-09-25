@@ -80,6 +80,17 @@ describe("the display draws the projected text", () => {
     expect(container.querySelector("[data-props-api-version]")?.getAttribute("data-props-api-version")).toBe("2");
   });
 
+  // NO ADDRESS AT ALL, ON EITHER SURFACE. The panel used to offer a download, so
+  // this pinned that the offered address was the island one. The drawing gives
+  // this kind no download inside the panel (§V.2), so what is pinned now is the
+  // stronger reading the content channel was built for: the document is drawn
+  // from the props on the island, and the display reaches for nothing.
+  it("reaches for no byte address on the island — the document came on the props", () => {
+    const { container } = mountWatched(<TextArtifactDetail {...islandProps(textContent(DOCUMENT))} />);
+    expect(container.textContent ?? "").toContain(DOCUMENT.slice(0, 12));
+    expect(container.querySelector("a")).toBeNull();
+  });
+
   it("appends no download anchor inside the content article, on either road", () => {
     // ACCEPTANCE 1. The download belongs to the surface around this display and
     // to the named floor, never beneath a body it would read as one more line of
@@ -148,20 +159,15 @@ describe("the display floors, named and never blank", () => {
     expect(container.querySelector("[data-text-floor]")).not.toBeNull();
   });
 
-  it("keeps a download affordance beside the floor when there is an address for one", () => {
+  // THE FLOOR NAMES THE GAP AND OFFERS NOTHING BESIDE IT. The drawing gives this
+  // kind no download control inside the panel (§V.2), and a floor is still the
+  // panel: it says what is missing, which is the whole of what it has to say.
+  it("names the gap on the floor and adds no control beside it", () => {
     const { container } = mountWatched(
       <TextArtifactDetail {...props(noContent("over-cap"))} />,
     );
-    expect(container.querySelector("a")?.getAttribute("href")).toBe(
-      "/api/artifacts/art_1/versions/rev_1/content",
-    );
-  });
-
-  it("offers the byte reference as that floor's download address, which is the one an island reader can use", () => {
-    const { container } = mountWatched(<TextArtifactDetail {...islandProps(noContent("over-cap"))} />);
-    expect(container.querySelector("a")?.getAttribute("href")).toContain(
-      "/api/lifecycle-views/artifact-bytes",
-    );
+    expect((container.textContent ?? "").trim().length).toBeGreaterThan(0);
+    expect(container.querySelector("a")).toBeNull();
   });
 });
 
