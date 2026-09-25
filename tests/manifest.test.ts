@@ -87,13 +87,31 @@ describe("package.json manifest — the system-base text identity", () => {
     expect(pkg.cinatra.artifact.ui.renderers.detail.representations ?? []).not.toContain(
       "text/markdown",
     );
+    // Nor text/x-markdown: that alias is canonicalised to text/markdown in the
+    // host or declared by the markdown pack, never by the text pack.
+    for (const list of [
+      pkg.cinatra.artifact.accepts.file.mimeTypes,
+      textArtifactManifest.accepts.file.mimeTypes,
+      pkg.cinatra.artifact.ui.renderers.detail.representations ?? [],
+      textArtifactManifest.ui.renderers.detail?.representations ?? [],
+    ]) {
+      expect(list).not.toContain("text/x-markdown");
+    }
   });
 
-  it("DRAWS only text/csv — a subset of accepts; text/plain keeps the host floor", () => {
-    // The renderer's `representations` (what it draws) is a deliberate SUBSET of
-    // `accepts` (what it types): the host owns a richer `text` renderer, so
-    // this base draws only the csv form the host has no renderer for.
-    expect(pkg.cinatra.artifact.ui.renderers.detail.representations).toEqual(["text/csv"]);
+  // The host's `text` floor retires under cinatra-ai/cinatra#3319, so this text
+  // base is the one display a plain-text artifact meets: the renderer DRAWS
+  // text/plain beside text/csv, in the order accepts lists them, and what it
+  // draws stays a subset of what it types, with no wildcard.
+  it("DRAWS text/plain beside text/csv — a subset of accepts, in accepts order", () => {
+    expect(pkg.cinatra.artifact.ui.renderers.detail.representations).toEqual([
+      "text/plain",
+      "text/csv",
+    ]);
+    expect(textArtifactManifest.ui.renderers.detail?.representations).toEqual([
+      "text/plain",
+      "text/csv",
+    ]);
     const reps = pkg.cinatra.artifact.ui.renderers.detail.representations ?? [];
     for (const r of reps) {
       expect(pkg.cinatra.artifact.accepts.file.mimeTypes).toContain(r);

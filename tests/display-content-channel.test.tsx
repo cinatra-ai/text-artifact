@@ -91,6 +91,21 @@ describe("the display draws the projected text", () => {
     expect(container.querySelector("a")).toBeNull();
   });
 
+  it("appends no download anchor inside the content article, on either road", () => {
+    // ACCEPTANCE 1. The download belongs to the surface around this display and
+    // to the named floor, never beneath a body it would read as one more line of
+    // the file. Both fixtures carry an address, so a pass here is the display
+    // declining to draw one, not a fixture that had nothing to draw.
+    for (const snapshot of [props(textContent(DOCUMENT)), islandProps(textContent(DOCUMENT))]) {
+      expect(snapshot.bytes?.download).toBeTruthy();
+      const { container } = mountWatched(<TextArtifactDetail {...snapshot} />);
+      expect(container.querySelector("[data-text-artifact-body]")).not.toBeNull();
+      expect(container.querySelector("a")).toBeNull();
+      expect(container.querySelector("button")).toBeNull();
+      cleanup();
+    }
+  });
+
   it("says how much of a truncated document it is showing", () => {
     const { container } = mountWatched(
       <TextArtifactDetail
@@ -100,6 +115,19 @@ describe("the display draws the projected text", () => {
     const note = container.querySelector("[data-text-artifact-truncated]");
     expect(note?.textContent).toContain("262,144");
     expect(note?.textContent).toContain("900,000");
+  });
+
+  it("keeps that truncation notice and still appends no download anchor", () => {
+    // ACCEPTANCE 2. The notice stays; the anchor the notice's own sentence points
+    // at is the surface's to draw, not this display's.
+    const snapshot = props(
+      textContent(DOCUMENT, { truncated: true, byteLength: 900000, projectedByteLength: 262144 }),
+    );
+    expect(snapshot.bytes?.download).toBeTruthy();
+    const { container } = mountWatched(<TextArtifactDetail {...snapshot} />);
+    expect(container.querySelector("[data-text-artifact-truncated]")).not.toBeNull();
+    expect(container.querySelector("a")).toBeNull();
+    expect(container.querySelector("button")).toBeNull();
   });
 });
 
