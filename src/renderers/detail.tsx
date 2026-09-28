@@ -2,10 +2,7 @@
 //
 // It draws the plain-text document the host projected onto these props, read
 // from the pinned revision on the server and capped there. It is READ-ONLY: the
-// content as it was stored at that revision, and nothing else — no download
-// anchor of its own beneath the body, where it would read as one more line of
-// the file. The download belongs to the surface around this display, and to the
-// named floor, which is a display for bytes that cannot be drawn at all.
+// content as it was stored at that revision.
 //
 // WHAT CHANGED AND WHY. This display used to hand the browser a host-authorized
 // address and let it load the document in a fully-sandboxed subframe. A
@@ -15,8 +12,12 @@
 // display performs no load of any kind, on any road, so the same document is
 // drawn on every host.
 //
-// NEVER BLANK, NEVER THROWN: content it cannot draw becomes a NAMED floor, and
-// the floor keeps the download affordance when there is an address for one.
+// NEVER BLANK, NEVER THROWN: content it cannot draw becomes a NAMED floor.//
+// NO HEADER STRIP, AND NO DOWNLOAD INSIDE THE PANEL (the review drawing §V.2,
+// §XI). "It has no tabs and nothing else to put in a header, so it carries no
+// header strip at all." A proof round graded the download control this panel
+// appended as a control on a surface the drawing gives none: the page's own
+// header names the file, and the panel is the work and nothing else.
 
 import type { ReactElement } from "react";
 
@@ -24,17 +25,10 @@ import {
   ARTIFACT_RENDERER_PROPS_API_VERSION,
   type ArtifactRendererProps,
 } from "../artifact-renderer-props";
-import { byteDownloadHref, contentFloorMessage, resolveArtifactTextView } from "../content-view";
+import { contentFloorMessage, resolveArtifactTextView } from "../content-view";
 
 export default function TextArtifactDetail(props: ArtifactRendererProps): ReactElement {
   const view = resolveArtifactTextView(props);
-  const downloadHref = byteDownloadHref(props);
-  const download = downloadHref ? (
-    <a href={downloadHref} className="text-sm underline" download>
-      Download the text file
-    </a>
-  ) : null;
-
   if (view.kind === "floor") {
     return (
       <article
@@ -44,7 +38,6 @@ export default function TextArtifactDetail(props: ArtifactRendererProps): ReactE
         data-props-api-version={ARTIFACT_RENDERER_PROPS_API_VERSION}
       >
         <p className="text-sm text-muted-foreground">{contentFloorMessage(view.reason)}</p>
-        {download}
       </article>
     );
   }
@@ -65,7 +58,7 @@ export default function TextArtifactDetail(props: ArtifactRendererProps): ReactE
       </pre>
       {view.truncated ? (
         <p className="mt-4 text-xs text-muted-foreground" data-text-artifact-truncated="">
-          {`Showing the first ${view.projectedByteLength.toLocaleString("en-US")} of ${view.byteLength.toLocaleString("en-US")} bytes. Download it to read the whole of it.`}
+          {`Showing the first ${view.projectedByteLength.toLocaleString("en-US")} of ${view.byteLength.toLocaleString("en-US")} bytes.`}
         </p>
       ) : null}
     </article>
